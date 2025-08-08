@@ -52,12 +52,29 @@ namespace CitiesManager.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CityResponse>> Post([FromBody] CityAddRequest request)
         {
-            var addedCity = await _citiesAdderService.AddAsync(request.Name);
+            var result = await _citiesAdderService.AddAsync(request.Name);
 
-            if (addedCity is null)
-                return BadRequest();
+            return result.ResultStatus switch
+            {
+                Status.Success => CreatedAtAction(
+                    nameof(GetCity), 
+                    new { id = result.City!.Id }, 
+                    result.City!.ToCityResponse()),
 
-            return CreatedAtAction(nameof(GetCity), new { id =  addedCity.Id }, addedCity.ToCityResponse());
+                Status.InvalidInput => Problem(
+                    title: "The City name is not valid.",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    detail: "The city name cannot be null, empty, or contain only whitespace."),
+
+                Status.NameAlreadyExists => Problem(
+                    title: "The City name already exists",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    detail: "A city with the same name already exists in the storage."),
+
+                _ => Problem(
+                    title: "Unexpected error while addind the city.",
+                    statusCode: StatusCodes.Status500InternalServerError)
+            };
         }
 
         // PUT api/<CitiesController>/5
@@ -65,14 +82,21 @@ namespace CitiesManager.WebAPI.Controllers
         public async Task<IActionResult> Put(Guid id, CityUpdateRequest request)
         {
             if (id != request.Id)
-                return BadRequest();
+                return Problem(
+                    title: "City ID mismatch.",
+                    detail: $"The City ID in the route ('{id}') does not match the City ID in the request body ('{request.Id}').",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             var updatedCity = await _citiesUpdaterService.UpdateAsync(request.ToCity());
-
+            
             return updatedCity.ResultStatus switch
             {
                 Status.Success => Ok(updatedCity.City),
-                Status.InvalidInput => BadRequest(),
+                Status.InvalidInput => Problem(
+                    title: "The City ID is empty.",
+                    detail: "The City ID in the request body must not be empty",
+                    statusCode: StatusCodes.Status400BadRequest),
                 Status.NotFound => NotFound(),
                 Status.NameAlreadyExists => Conflict("City with the same name already exists"),
                 _ => StatusCode(500)

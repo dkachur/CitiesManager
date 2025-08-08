@@ -1,4 +1,5 @@
 ﻿using CitiesManager.Core.Domain.Entities;
+using CitiesManager.Core.Results;
 
 namespace CitiesManager.Core.ServiceContracts
 {
@@ -14,7 +15,7 @@ namespace CitiesManager.Core.ServiceContracts
         /// </summary>
         /// <remarks>The city name must be unique within the repository.</remarks>
         /// <param name="cityName">The name of the city to add. Should not be null or empty.</param>
-        /// <returns>The added city object.</returns>
-        Task<City?> AddAsync(string cityName);
+        /// <returns>The <see cref="AddCityResult"/> object which contains details about status of the opearation and added <see cref="City"/> object.</returns>
+        Task<AddCityResult> AddAsync(string cityName);
     }
 }
