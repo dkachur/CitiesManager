@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "bcee3462-1512-4fc3-98cf-dbfbccf1e919",
+    "Name": "London"
+  },
+  {
+    "Id": "b9bb7cd6-7969-4fc0-8dae-b7ef7c9c6580",
+    "Name": "Berlin"
+  },
+  {
+    "Id": "8467e78c-bf7d-443b-9e7d-e07848e6a6a4",
+    "Name": "Amsterdam"
+  },
+  {
+    "Id": "d9ee6f5f-5dbe-4356-8c78-af1532ac8fbc",
+    "Name": "Bangkok"
+  },
+  {
+    "Id": "0edbd081-15ef-4679-a5f4-5d000aaf2b4e",
+    "Name": "Prague"
+  },
+  {
+    "Id": "08a84aab-9084-4179-9e9d-9d43de5546fc",
+    "Name": "Kyiv"
+  },
+  {
+    "Id": "8f8c9266-193d-4a63-ac50-1db0954c9c5e",
+    "Name": "Chicago"
+  },
+  {
+    "Id": "cdea0ec1-4f3a-4c0a-8804-a9acc278c78b",
+    "Name": "Atlanta"
+  }
+]
