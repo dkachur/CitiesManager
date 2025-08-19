@@ -3,6 +3,7 @@ using CitiesManager.Core.Results;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.WebAPI.Extensions.Mappers;
 using CitiesManager.WebAPI.Models.DTOs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CitiesManager.WebAPI.Controllers.v1
@@ -12,6 +13,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
     /// Provides endpoints for adding, retrieving, updating, and deleting city records.
     /// </summary>
     [ApiVersion("1.0")]
+    //[EnableCors("DefClient")]
     public class CitiesController : CustomControllerBase
     {
         private readonly ICitiesAdderService _citiesAdderService;

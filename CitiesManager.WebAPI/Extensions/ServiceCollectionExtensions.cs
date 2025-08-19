@@ -72,6 +72,27 @@ namespace CitiesManager.WebAPI.Extensions
                 options.SwaggerDoc("v2", new() { Title = "Cities Web API", Version = "2.0"});
             });
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policyBuilder =>
+                {
+                    policyBuilder
+                        .WithMethods("GET", "POST", "HEAD", "PUT", "DELETE")
+                        .WithHeaders("Authorization", "content-type", "accept", "origin")
+                        .WithOrigins(configuration.GetSection("AllowedOrigins")
+                                                  .Get<string[]>() ?? []);
+                });
+
+                options.AddPolicy("DefClient", policyBuilder =>
+                {
+                    policyBuilder
+                        .WithMethods("GET", "POST", "HEAD")
+                        .WithHeaders("Authorization", "accept", "origin")
+                        .WithOrigins(configuration.GetSection("AllowedClientOrigins")
+                                                  .Get<string[]>() ?? []);
+                });
+            });
+                
             return services;
         }
     }
