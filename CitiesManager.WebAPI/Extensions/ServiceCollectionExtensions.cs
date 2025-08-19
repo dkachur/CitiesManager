@@ -4,9 +4,13 @@ using CitiesManager.Core.RepositoryContracts;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.Core.Services;
 using CitiesManager.Infrastructure.DatabaseContext;
+using CitiesManager.Infrastructure.Identity;
 using CitiesManager.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CitiesManager.WebAPI.Extensions
 {
@@ -63,6 +67,20 @@ namespace CitiesManager.WebAPI.Extensions
              {
                  options.UseSqlServer(configuration.GetConnectionString("Default"));
              });
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+                .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>

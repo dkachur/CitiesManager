@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CitiesManager.Core.Domain.Entities;
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CitiesManager.Infrastructure.Identity;
 
 namespace CitiesManager.Infrastructure.DatabaseContext
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public virtual DbSet<City> Cities { get; set; }
 
