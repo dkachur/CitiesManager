@@ -28,14 +28,27 @@ namespace CitiesManager.WebAPI.Controllers.v1
             _roleManager = roleManager;
         }
 
-        public async Task<ActionResult<bool>> IsEmailAlreadyRegistered(string email)
+        /// <summary>
+        /// Checks whether the specified email address is available for registration.
+        /// </summary>
+        /// <param name="email">The email address to check.</param>
+        /// <returns><c>true</c> if the email is available; otherwise, <c>false</c>.</returns>
+        public async Task<ActionResult<bool>> IsEmailAvailable(string email)
         {
             if (await _userManager.FindByEmailAsync(email) == null)
-                return Ok(false);
+                return Ok(true);
             
-            return Ok(true);
+            return Ok(false);
         }
 
+        /// <summary>
+        /// Registers a new user account and signs in the user upon successful registration.
+        /// </summary>
+        /// <param name="request">The registration request</param>
+        /// <returns>
+        /// An <see cref="OkObjectResult"/> containing the newly created user if registration succeeds;
+        /// otherwise, a <see cref="ProblemDetails"/> object with error information.
+        /// </returns>
         public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterRequest request)
         {
             if (!ModelState.IsValid)
