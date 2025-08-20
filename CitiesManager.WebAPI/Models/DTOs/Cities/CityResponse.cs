@@ -1,4 +1,4 @@
-﻿namespace CitiesManager.WebAPI.Models.DTOs
+﻿namespace CitiesManager.WebAPI.Models.DTOs.Cities
 {
     /// <summary>
     /// DTO for sending responses with city details.

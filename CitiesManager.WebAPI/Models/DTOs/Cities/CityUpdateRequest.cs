@@ -1,7 +1,7 @@
-﻿using CitiesManager.Core.Domain.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using CitiesManager.Core.Domain.Entities;
 
-namespace CitiesManager.WebAPI.Models.DTOs
+namespace CitiesManager.WebAPI.Models.DTOs.Cities
 {
     /// <summary>
     /// DTO for updating the existing city.

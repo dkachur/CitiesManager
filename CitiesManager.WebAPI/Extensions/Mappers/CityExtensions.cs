@@ -1,5 +1,5 @@
 ﻿using CitiesManager.Core.Domain.Entities;
-using CitiesManager.WebAPI.Models.DTOs;
+using CitiesManager.WebAPI.Models.DTOs.Cities;
 
 namespace CitiesManager.WebAPI.Extensions.Mappers
 {

@@ -1,7 +1,6 @@
-﻿using CitiesManager.Core.Domain.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CitiesManager.WebAPI.Models.DTOs
+namespace CitiesManager.WebAPI.Models.DTOs.Cities
 {
     /// <summary>
     /// DTO for adding a new city. Contains the information required to create a city entry.

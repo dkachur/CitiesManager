@@ -2,7 +2,7 @@
 using CitiesManager.Core.Results;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.WebAPI.Extensions.Mappers;
-using CitiesManager.WebAPI.Models.DTOs;
+using CitiesManager.WebAPI.Models.DTOs.Cities;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
