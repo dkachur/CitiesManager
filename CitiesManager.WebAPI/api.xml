@@ -29,7 +29,7 @@
             <param name="email">The email address to check.</param>
             <returns><c>true</c> if the email is available; otherwise, <c>false</c>.</returns>
         </member>
-        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.PostRegister(CitiesManager.WebAPI.Models.DTOs.Account.RegisterRequest)">
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.PostRegister(CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest)">
             <summary>
             Registers a new user account and signs in the user upon successful registration.
             </summary>
@@ -38,6 +38,19 @@
             An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the newly created user if registration succeeds;
             otherwise, a <see cref="T:Microsoft.AspNetCore.Mvc.ProblemDetails"/> object with error information.
             </returns>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.PostLogin(CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest)">
+            <summary>
+            Login a user into the account.
+            </summary>
+            <param name="request">The request for login.</param>
+            <returns>The user's name and email.</returns>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.GetLogout">
+            <summary>
+            Logout from the account.
+            </summary>
+            <returns><see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> object.</returns>
         </member>
         <member name="T:CitiesManager.WebAPI.Controllers.v1.CitiesController">
             <summary>
@@ -164,7 +177,27 @@
             to register all required services for the CitiesManager Web API.
             </remarks>
         </member>
-        <member name="T:CitiesManager.WebAPI.Models.DTOs.Account.RegisterRequest">
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.Email">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.Password">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest">
             <summary>
             
             </summary>

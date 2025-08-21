@@ -37,7 +37,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         {
             if (await _userManager.FindByEmailAsync(email) == null)
                 return Ok(true);
-            
+
             return Ok(false);
         }
 
@@ -50,7 +50,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         /// otherwise, a <see cref="ProblemDetails"/> object with error information.
         /// </returns>
         [HttpPost("register")]
-        public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterRequest request)
+        public async Task<ActionResult<RegisterResponse>> PostRegister(RegisterRequest request)
         {
             ApplicationUser user = new()
             {
@@ -64,11 +64,51 @@ namespace CitiesManager.WebAPI.Controllers.v1
             if (!result.Succeeded)
             {
                 var errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
-                return Problem(errorMessage);
+                return Problem(errorMessage, statusCode: StatusCodes.Status400BadRequest);
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            return Ok(user);
+            return Ok(new RegisterResponse()
+            {
+                Email = user.Email,
+                PersonName = user.PersonName,
+                Phone = user.PhoneNumber
+            });
+        }
+
+        /// <summary>
+        /// Login a user into the account.
+        /// </summary>
+        /// <param name="request">The request for login.</param>
+        /// <returns>The user's name and email.</returns>
+        [HttpPost("login")]
+        public async Task<IActionResult> PostLogin(LoginRequest request)
+        {
+            var result = await _signInManager.PasswordSignInAsync(
+                request.Email,
+                request.Password,
+                isPersistent: false,
+                lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+                return Problem("Invalid email or password");
+
+            var user = await _userManager.FindByNameAsync(request.Email);
+            if (user is null)
+                return NoContent();
+
+            return Ok(new { personName = user.PersonName, email = user.Email });
+        }
+
+        /// <summary>
+        /// Logout from the account.
+        /// </summary>
+        /// <returns><see cref="NoContentResult"/> object.</returns>
+        [HttpGet("logout")]
+        public async Task<IActionResult> GetLogout()
+        {
+            await _signInManager.SignOutAsync();
+            return NoContent();
         }
     }
 }
