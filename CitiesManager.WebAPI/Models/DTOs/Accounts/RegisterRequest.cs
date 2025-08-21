@@ -9,7 +9,7 @@ namespace CitiesManager.WebAPI.Models.DTOs.Account
     public class RegisterRequest
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string PersonName { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]

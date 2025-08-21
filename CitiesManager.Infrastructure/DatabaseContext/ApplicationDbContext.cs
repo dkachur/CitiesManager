@@ -14,7 +14,7 @@ namespace CitiesManager.Infrastructure.DatabaseContext
         {
         }
 
-        public ApplicationDbContext(DbContextOptions options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
         }
 

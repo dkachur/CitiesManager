@@ -49,6 +49,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         /// An <see cref="OkObjectResult"/> containing the newly created user if registration succeeds;
         /// otherwise, a <see cref="ProblemDetails"/> object with error information.
         /// </returns>
+        [HttpPost("register")]
         public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterRequest request)
         {
             if (!ModelState.IsValid)
@@ -60,8 +61,8 @@ namespace CitiesManager.WebAPI.Controllers.v1
             ApplicationUser user = new()
             {
                 Email = request.Email,
-                UserName = request.Name,
-                PersonName = request.Name,
+                UserName = request.Email,
+                PersonName = request.PersonName,
                 PhoneNumber = request.Phone
             };
 

@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using CitiesManager.Core.ServiceContracts;
-using CitiesManager.WebAPI.Models.DTOs.City;
+using CitiesManager.WebAPI.Models.DTOs.Cities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CitiesManager.WebAPI.Controllers.v2

@@ -9,6 +9,36 @@
             Custom controller base.
             </summary>
         </member>
+        <member name="T:CitiesManager.WebAPI.Controllers.v1.AccountController">
+            <summary>
+            Controller responsible for managing user accounts and authorization.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.UserManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{CitiesManager.Infrastructure.Identity.ApplicationRole})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CitiesManager.WebAPI.Controllers.v1.AccountController"/> class.
+            </summary>
+            <param name="signInManager">Manager for sign in operations.</param>
+            <param name="userManager">Manager for user related operations.</param>
+            <param name="roleManager">Manager for role related operations.</param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.IsEmailAvailable(System.String)">
+            <summary>
+            Checks whether the specified email address is available for registration.
+            </summary>
+            <param name="email">The email address to check.</param>
+            <returns><c>true</c> if the email is available; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.PostRegister(CitiesManager.WebAPI.Models.DTOs.Account.RegisterRequest)">
+            <summary>
+            Registers a new user account and signs in the user upon successful registration.
+            </summary>
+            <param name="request">The registration request</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> containing the newly created user if registration succeeds;
+            otherwise, a <see cref="T:Microsoft.AspNetCore.Mvc.ProblemDetails"/> object with error information.
+            </returns>
+        </member>
         <member name="T:CitiesManager.WebAPI.Controllers.v1.CitiesController">
             <summary>
             Controller responsible for managing cities.
@@ -28,16 +58,16 @@
             <summary>
             Retrieves all cities.
             </summary>
-            <returns>A collection of <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> containing details about all cities.</returns>
+            <returns>A collection of <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> containing details about all cities.</returns>
         </member>
         <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.GetCity(System.Guid)">
             <summary>
             Retrieves the city with specified id.
             </summary>
             <param name="id">The unique identifier of the city.</param>
-            <returns>A <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> with city details if found; otherwise, <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+            <returns>A <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> with city details if found; otherwise, <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
         </member>
-        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.Post(CitiesManager.WebAPI.Models.DTOs.CityAddRequest)">
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.Post(CitiesManager.WebAPI.Models.DTOs.Cities.CityAddRequest)">
             <summary>
             Adds a new city to storage.
             </summary>
@@ -48,14 +78,14 @@
             <see cref="T:Microsoft.AspNetCore.Mvc.ProblemDetails"/> with error message if unexpected error occurred.
             </returns>
         </member>
-        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.Put(System.Guid,CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest)">
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.Put(System.Guid,CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest)">
             <summary>
             Updates an existing city.
             </summary>
             <param name="id">The unique identifier of the city.</param>
             <param name="request">
             A request containing details for updating the city.
-            <see cref="P:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest.Id"/> must match with the <paramref name="id"/> from route.
+            <see cref="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest.Id"/> must match with the <paramref name="id"/> from route.
             </param>
             <returns>
             <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the updated city if updation is successful;
@@ -90,14 +120,14 @@
             <summary>
             Retrieves all cities.
             </summary>
-            <returns>A collection of <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> containing details about all cities.</returns>
+            <returns>A collection of <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> containing details about all cities.</returns>
         </member>
         <member name="M:CitiesManager.WebAPI.Controllers.v2.CitiesController.GetCity(System.Guid)">
             <summary>
             Retrieves the city with specified id.
             </summary>
             <param name="id">The unique identifier of the city.</param>
-            <returns>A <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> with city details if found; otherwise, <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+            <returns>A <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> with city details if found; otherwise, <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
         </member>
         <member name="T:CitiesManager.WebAPI.Extensions.Mappers.CityExtensions">
             <summary>
@@ -106,10 +136,10 @@
         </member>
         <member name="M:CitiesManager.WebAPI.Extensions.Mappers.CityExtensions.ToCityResponse(CitiesManager.Core.Domain.Entities.City)">
             <summary>
-            Converts the <see cref="T:CitiesManager.Core.Domain.Entities.City"/> object into the <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> object
+            Converts the <see cref="T:CitiesManager.Core.Domain.Entities.City"/> object into the <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> object
             </summary>
             <param name="city">The instance of the city to convert.</param>
-            <returns>The converted <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityResponse"/> object.</returns>
+            <returns>The converted <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse"/> object.</returns>
         </member>
         <member name="T:CitiesManager.WebAPI.Extensions.ServiceCollectionExtensions">
             <summary>
@@ -134,49 +164,54 @@
             to register all required services for the CitiesManager Web API.
             </remarks>
         </member>
-        <member name="T:CitiesManager.WebAPI.Models.DTOs.CityAddRequest">
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Account.RegisterRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityAddRequest">
             <summary>
             DTO for adding a new city. Contains the information required to create a city entry.
             </summary>
         </member>
-        <member name="P:CitiesManager.WebAPI.Models.DTOs.CityAddRequest.Name">
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityAddRequest.Name">
             <summary>
             The name of the city to add. This field is required and cannot be empty or whitespace.
             </summary>
         </member>
-        <member name="T:CitiesManager.WebAPI.Models.DTOs.CityResponse">
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse">
             <summary>
             DTO for sending responses with city details.
             </summary>
         </member>
-        <member name="P:CitiesManager.WebAPI.Models.DTOs.CityResponse.Id">
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse.Id">
             <summary>
             The unique identifier of the city.
             </summary>
         </member>
-        <member name="P:CitiesManager.WebAPI.Models.DTOs.CityResponse.Name">
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityResponse.Name">
             <summary>
             The name of the city.
             </summary>
         </member>
-        <member name="T:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest">
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest">
             <summary>
             DTO for updating the existing city.
             </summary>
         </member>
-        <member name="P:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest.Id">
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest.Id">
             <summary>
             The unique identifier of the city. This field cannot be null or empty.
             </summary>
         </member>
-        <member name="P:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest.Name">
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest.Name">
             <summary>
             The name of the city. This field cannot be null or empty.
             </summary>
         </member>
-        <member name="M:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest.ToCity">
+        <member name="M:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest.ToCity">
             <summary>
-            Converts <see cref="T:CitiesManager.WebAPI.Models.DTOs.CityUpdateRequest"/> object into the <see cref="T:CitiesManager.Core.Domain.Entities.City"/> object.
+            Converts <see cref="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityUpdateRequest"/> object into the <see cref="T:CitiesManager.Core.Domain.Entities.City"/> object.
             </summary>
             <returns>The converted <see cref="T:CitiesManager.Core.Domain.Entities.City"/> object.</returns>
         </member>
