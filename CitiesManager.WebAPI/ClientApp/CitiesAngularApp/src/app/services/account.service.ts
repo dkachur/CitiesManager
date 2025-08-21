@@ -15,11 +15,11 @@ export class AccountService {
 
   }
 
-  public postRegister(user: RegisterUser): Observable<RegisterUser> {
+  public postRegister(user: RegisterUser): Observable<any> {
     return this.httpClient.post<RegisterUser>(`${API_BASE_URL}register`, user);
   }
 
-  public postLogin(user: LoginUser): Observable<LoginUser> {
+  public postLogin(user: LoginUser): Observable<any> {
     return this.httpClient.post<LoginUser>(`${API_BASE_URL}login`, user);
   }
 
