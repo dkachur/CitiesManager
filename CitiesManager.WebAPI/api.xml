@@ -14,13 +14,14 @@
             Controller responsible for managing user accounts and authorization.
             </summary>
         </member>
-        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.UserManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{CitiesManager.Infrastructure.Identity.ApplicationRole})">
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.UserManager{CitiesManager.Infrastructure.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{CitiesManager.Infrastructure.Identity.ApplicationRole},CitiesManager.Core.ServiceContracts.IJwtService)">
             <summary>
             Initializes a new instance of the <see cref="T:CitiesManager.WebAPI.Controllers.v1.AccountController"/> class.
             </summary>
             <param name="signInManager">Manager for sign in operations.</param>
             <param name="userManager">Manager for user related operations.</param>
             <param name="roleManager">Manager for role related operations.</param>
+            <param name="jwtService">Service for creating JWT token.</param>
         </member>
         <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.IsEmailAvailable(System.String)">
             <summary>

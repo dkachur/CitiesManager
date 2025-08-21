@@ -5,7 +5,9 @@ using CitiesManager.Core.ServiceContracts;
 using CitiesManager.Core.Services;
 using CitiesManager.Infrastructure.DatabaseContext;
 using CitiesManager.Infrastructure.Identity;
+using CitiesManager.Infrastructure.Options;
 using CitiesManager.Infrastructure.Repositories;
+using CitiesManager.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -37,12 +39,16 @@ namespace CitiesManager.WebAPI.Extensions
         /// </remarks>
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+
             services.AddScoped<ICitiesAdderService, CitiesAdderService>();
             services.AddScoped<ICitiesGetterService, CitiesGetterService>();
             services.AddScoped<ICitiesUpdaterService, CitiesUpdaterService>();
             services.AddScoped<ICitiesDeleterService, CitiesDeleterService>();
 
             services.AddScoped<ICitiesRepository, CitiesRepository>();
+
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddControllers(options =>
             {

@@ -1,4 +1,6 @@
-﻿using CitiesManager.Infrastructure.Identity;
+﻿using CitiesManager.Core.DTOs;
+using CitiesManager.Core.ServiceContracts;
+using CitiesManager.Infrastructure.Identity;
 using CitiesManager.WebAPI.Models.DTOs.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IJwtService _jwtService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -21,11 +24,17 @@ namespace CitiesManager.WebAPI.Controllers.v1
         /// <param name="signInManager">Manager for sign in operations.</param>
         /// <param name="userManager">Manager for user related operations.</param>
         /// <param name="roleManager">Manager for role related operations.</param>
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        /// <param name="jwtService">Service for creating JWT token.</param>
+        public AccountController(
+            SignInManager<ApplicationUser> signInManager, 
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<ApplicationRole> roleManager, 
+            IJwtService jwtService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtService = jwtService;
         }
 
         /// <summary>
@@ -50,7 +59,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         /// otherwise, a <see cref="ProblemDetails"/> object with error information.
         /// </returns>
         [HttpPost("register")]
-        public async Task<ActionResult<RegisterResponse>> PostRegister(RegisterRequest request)
+        public async Task<ActionResult<AuthenticationResponse>> PostRegister(RegisterRequest request)
         {
             ApplicationUser user = new()
             {
@@ -68,12 +77,20 @@ namespace CitiesManager.WebAPI.Controllers.v1
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            return Ok(new RegisterResponse()
-            {
+
+            var authResponse = _jwtService.CreateJwtToken(new() {
                 Email = user.Email,
                 PersonName = user.PersonName,
-                Phone = user.PhoneNumber
+                UserId = user.Id
             });
+
+            //return Ok(new RegisterResponse()
+            //{
+            //    Email = user.Email,
+            //    PersonName = user.PersonName,
+            //    Phone = user.PhoneNumber
+            //});
+            return Ok(authResponse);
         }
 
         /// <summary>
@@ -94,10 +111,19 @@ namespace CitiesManager.WebAPI.Controllers.v1
                 return Problem("Invalid email or password");
 
             var user = await _userManager.FindByNameAsync(request.Email);
-            if (user is null)
+            if (user is null 
+                || user.Email is null 
+                || user.PersonName is null)
                 return NoContent();
 
-            return Ok(new { personName = user.PersonName, email = user.Email });
+            var authResponse = _jwtService.CreateJwtToken(new()
+            {
+                Email = user.Email,
+                PersonName = user.PersonName,
+                UserId = user.Id
+            });
+
+            return Ok(authResponse);
         }
 
         /// <summary>
