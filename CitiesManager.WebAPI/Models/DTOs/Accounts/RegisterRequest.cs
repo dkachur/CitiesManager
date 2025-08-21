@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace CitiesManager.WebAPI.Models.DTOs.Account
+namespace CitiesManager.WebAPI.Models.DTOs.Accounts
 {
     /// <summary>
     /// 

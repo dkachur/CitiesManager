@@ -1,5 +1,5 @@
 ﻿using CitiesManager.Infrastructure.Identity;
-using CitiesManager.WebAPI.Models.DTOs.Account;
+using CitiesManager.WebAPI.Models.DTOs.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
@@ -52,12 +52,6 @@ namespace CitiesManager.WebAPI.Controllers.v1
         [HttpPost("register")]
         public async Task<ActionResult<ApplicationUser>> PostRegister(RegisterRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                var errorMessage = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
-
             ApplicationUser user = new()
             {
                 Email = request.Email,
