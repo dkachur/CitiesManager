@@ -58,6 +58,7 @@ export class RegisterComponent {
         console.log(response);
 
         this.isRegisterFormSubmitted = false;
+        this.accountService.currentUserName = response.email;
         this.router.navigate(["/cities"]);
 
         this.registerForm.reset();
