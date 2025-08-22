@@ -19,8 +19,12 @@ namespace CitiesManager.Core.Services
             if (city.Id == Guid.Empty)
                 return UpdateCityResult.Fail(Status.InvalidInput);
 
-            if (!await _citiesRepository.ExistsByIdAsync(city.Id))
+            var targetCity = await _citiesRepository.GetByIdAsync(city.Id);
+
+            if (targetCity is null)
                 return UpdateCityResult.Fail(Status.NotFound);
+            else if (targetCity.Name == city.Name)
+                return UpdateCityResult.Success(targetCity);
 
             if (await _citiesRepository.ExistsByNameAsync(city.Name))
                 return UpdateCityResult.Fail(Status.NameAlreadyExists);
