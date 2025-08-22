@@ -1,7 +1,9 @@
+﻿using Asp.Versioning;
 ﻿using CitiesManager.Core.DTOs;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.Infrastructure.Identity;
 using CitiesManager.WebAPI.Models.DTOs.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
@@ -11,6 +13,8 @@ namespace CitiesManager.WebAPI.Controllers.v1
     /// <summary>
     /// Controller responsible for managing user accounts and authorization.
     /// </summary>
+    [AllowAnonymous]
+    [ApiVersion("1.0")]
     public class AccountController : CustomControllerBase
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

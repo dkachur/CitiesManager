@@ -8,11 +8,15 @@ using CitiesManager.Infrastructure.Identity;
 using CitiesManager.Infrastructure.Options;
 using CitiesManager.Infrastructure.Repositories;
 using CitiesManager.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CitiesManager.WebAPI.Extensions
 {
@@ -39,8 +43,9 @@ namespace CitiesManager.WebAPI.Extensions
         /// </remarks>
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+            var jwtSection = configuration.GetSection("Jwt");
 
+            services.Configure<JwtOptions>(jwtSection);
             services.AddScoped<ICitiesAdderService, CitiesAdderService>();
             services.AddScoped<ICitiesGetterService, CitiesGetterService>();
             services.AddScoped<ICitiesUpdaterService, CitiesUpdaterService>();
@@ -54,6 +59,12 @@ namespace CitiesManager.WebAPI.Extensions
             {
                 options.Filters.Add(new ProducesAttribute("application/json"));
                 options.Filters.Add(new ConsumesAttribute("application/json"));
+
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
             });
 
             services.AddApiVersioning(options =>
@@ -87,13 +98,36 @@ namespace CitiesManager.WebAPI.Extensions
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
                 .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    JwtOptions jwtOptions = jwtSection.Get<JwtOptions>()
+                        ?? throw new InvalidOperationException("Jwt configuration section is missing.");
+
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtOptions.Issuer,
+                        ValidateAudience = true,
+                        ValidAudience = jwtOptions.Audience,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+                    };
+                });
+
+            services.AddAuthorization();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "api.xml"));
-                options.SwaggerDoc("v1", new() { Title = "Cities Web API", Version = "1.0"});
-                options.SwaggerDoc("v2", new() { Title = "Cities Web API", Version = "2.0"});
+                options.SwaggerDoc("v1", new() { Title = "Cities Web API", Version = "1.0" });
+                options.SwaggerDoc("v2", new() { Title = "Cities Web API", Version = "2.0" });
             });
 
             services.AddCors(options =>

@@ -17,6 +17,7 @@ export class AppComponent {
       next: (res: string) => {
         console.log("logout");
 
+        localStorage.removeItem("token");
         this.accountService.currentUserName = null;
 
         this.router.navigate(['/login']);
