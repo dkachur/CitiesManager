@@ -46,6 +46,8 @@ namespace CitiesManager.WebAPI.Extensions
             var jwtSection = configuration.GetSection("Jwt");
 
             services.Configure<JwtOptions>(jwtSection);
+            services.Configure<RefreshTokenOptions>(configuration.GetSection("RefreshToken"));
+
             services.AddScoped<ICitiesAdderService, CitiesAdderService>();
             services.AddScoped<ICitiesGetterService, CitiesGetterService>();
             services.AddScoped<ICitiesUpdaterService, CitiesUpdaterService>();
@@ -150,7 +152,7 @@ namespace CitiesManager.WebAPI.Extensions
                                                   .Get<string[]>() ?? []);
                 });
             });
-                
+
             return services;
         }
     }

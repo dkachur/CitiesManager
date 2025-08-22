@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-﻿using CitiesManager.Core.DTOs;
+using CitiesManager.Core.DTOs;
 using CitiesManager.Core.ServiceContracts;
 using CitiesManager.Infrastructure.Identity;
 using CitiesManager.WebAPI.Models.DTOs.Accounts;
@@ -88,6 +88,10 @@ namespace CitiesManager.WebAPI.Controllers.v1
                 UserId = user.Id
             });
 
+            user.RefreshToken = authResponse.RefreshToken;
+            user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
+            await _userManager.UpdateAsync(user);
+
             //return Ok(new RegisterResponse()
             //{
             //    Email = user.Email,
@@ -126,6 +130,10 @@ namespace CitiesManager.WebAPI.Controllers.v1
                 PersonName = user.PersonName,
                 UserId = user.Id
             });
+
+            user.RefreshToken = authResponse.RefreshToken;
+            user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
+            await _userManager.UpdateAsync(user);
 
             return Ok(authResponse);
         }

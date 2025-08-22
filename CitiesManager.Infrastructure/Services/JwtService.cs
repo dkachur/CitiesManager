@@ -5,22 +5,25 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CitiesManager.Infrastructure.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly JwtOptions _options;
+        private readonly JwtOptions _jwtOptions;
+        private readonly RefreshTokenOptions _refreshTokenOptions;
 
-        public JwtService(IOptions<JwtOptions> options)
+        public JwtService(IOptions<JwtOptions> jwtOptions, IOptions<RefreshTokenOptions> refreshTokenOptions)
         {
-            _options = options.Value;
+            _jwtOptions = jwtOptions.Value;
+            _refreshTokenOptions = refreshTokenOptions.Value;
         }
 
         public AuthenticationResponse CreateJwtToken(CreateJwtTokenRequest request)
         {
-            DateTime expiration = DateTime.UtcNow.AddMinutes(_options.ExpirationMinutes);
+            DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationMinutes);
 
             var claims = new Claim[] {
                new(JwtRegisteredClaimNames.Sub, request.UserId.ToString()),   // Subject (user ID)
@@ -32,13 +35,13 @@ namespace CitiesManager.Infrastructure.Services
                new(JwtRegisteredClaimNames.Name, request.PersonName),         // Name of the user
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
 
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var tokenGenerator = new JwtSecurityToken(
-                _options.Issuer, 
-                _options.Audience, 
+                _jwtOptions.Issuer, 
+                _jwtOptions.Audience, 
                 claims, 
                 expires: expiration,
                 signingCredentials: signingCredentials);
@@ -51,9 +54,19 @@ namespace CitiesManager.Infrastructure.Services
             {
                 Email = request.Email,
                 PersonName = request.PersonName,
-                Expire = expiration,
-                Token = token
+                Expiration = expiration,
+                Token = token,
+                RefreshToken = GenerateRefreshToken(),
+                RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(_refreshTokenOptions.ExpirationMinutes)
             };
+        }
+
+        private string GenerateRefreshToken()
+        {
+            byte[] bytes = new byte[64];
+            bytes = RandomNumberGenerator.GetBytes(64);
+
+            return Convert.ToBase64String(bytes);
         }
     }
 }
