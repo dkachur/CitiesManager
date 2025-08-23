@@ -6,7 +6,6 @@ using CitiesManager.WebAPI.Models.DTOs.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
 
 namespace CitiesManager.WebAPI.Controllers.v1
 {
@@ -41,18 +40,6 @@ namespace CitiesManager.WebAPI.Controllers.v1
             _jwtService = jwtService;
         }
 
-        /// <summary>
-        /// Checks whether the specified email address is available for registration.
-        /// </summary>
-        /// <param name="email">The email address to check.</param>
-        /// <returns><c>true</c> if the email is available; otherwise, <c>false</c>.</returns>
-        public async Task<ActionResult<bool>> IsEmailAvailable(string email)
-        {
-            if (await _userManager.FindByEmailAsync(email) == null)
-                return Ok(true);
-
-            return Ok(false);
-        }
 
         /// <summary>
         /// Registers a new user account and signs in the user upon successful registration.
@@ -65,6 +52,9 @@ namespace CitiesManager.WebAPI.Controllers.v1
         [HttpPost("register")]
         public async Task<ActionResult<AuthenticationResponse>> PostRegister(RegisterRequest request)
         {
+            if (await _userManager.FindByEmailAsync(request.Email) != null)
+                return Problem("Given email already registered.", statusCode: StatusCodes.Status400BadRequest);
+            
             ApplicationUser user = new()
             {
                 Email = request.Email,
@@ -92,12 +82,6 @@ namespace CitiesManager.WebAPI.Controllers.v1
             user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
             await _userManager.UpdateAsync(user);
 
-            //return Ok(new RegisterResponse()
-            //{
-            //    Email = user.Email,
-            //    PersonName = user.PersonName,
-            //    Phone = user.PhoneNumber
-            //});
             return Ok(authResponse);
         }
 

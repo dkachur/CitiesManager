@@ -13,7 +13,6 @@ namespace CitiesManager.WebAPI.Models.DTOs.Accounts
 
         [Required]
         [EmailAddress]
-        [Remote("IsEmailAvailable", "Account", ErrorMessage = "Given email already registered.")]
         public string Email { get; set; } = string.Empty;
 
         [Required]
