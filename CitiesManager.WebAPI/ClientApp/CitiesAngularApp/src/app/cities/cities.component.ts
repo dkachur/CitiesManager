@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { City } from '../models/city';
 import { CitiesService } from '../services/cities.service';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-cities',
@@ -16,7 +17,7 @@ export class CitiesComponent {
   putCityForm: FormGroup;
   editCityID: string | null = null;
 
-  constructor(private citiesService: CitiesService) {
+  constructor(private citiesService: CitiesService, private accountService: AccountService) {
     this.postCityForm = new FormGroup({
       name: new FormControl(null, [Validators.required])
     });
@@ -122,5 +123,22 @@ export class CitiesComponent {
         complete: () => { }
       });
     }
+  }
+
+  refreshClicked() {
+    this.accountService.postGenerateNewToken().subscribe({
+      next: (res: any) => {
+        localStorage["token"] = res.token;
+        localStorage["refreshToken"] = res.refreshToken;
+
+        this.loadCities();
+      },
+
+      error: (err: any) => {
+        console.log(err);
+      },
+
+      complete: () => { }
+    });
   }
 }
