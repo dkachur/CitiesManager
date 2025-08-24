@@ -23,13 +23,6 @@
             <param name="roleManager">Manager for role related operations.</param>
             <param name="jwtService">Service for creating JWT token.</param>
         </member>
-        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.IsEmailAvailable(System.String)">
-            <summary>
-            Checks whether the specified email address is available for registration.
-            </summary>
-            <param name="email">The email address to check.</param>
-            <returns><c>true</c> if the email is available; otherwise, <c>false</c>.</returns>
-        </member>
         <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.PostRegister(CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest)">
             <summary>
             Registers a new user account and signs in the user upon successful registration.
@@ -52,6 +45,14 @@
             Logout from the account.
             </summary>
             <returns><see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> object.</returns>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.GenerateNewAccessToken(CitiesManager.WebAPI.Models.DTOs.Accounts.TokenRequest)">
+            <summary>
+            Refreshes token based on the existing jwt token and refresh token.
+            </summary>
+            <param name="tokenRequest">The token request.</param>
+            <returns>The <see cref="T:CitiesManager.Core.DTOs.AuthenticationResponse"/> if refreshing was successful;
+            otherwise, <see cref="T:Microsoft.AspNetCore.Mvc.ProblemDetails"/> with error message</returns>
         </member>
         <member name="T:CitiesManager.WebAPI.Controllers.v1.CitiesController">
             <summary>
@@ -201,6 +202,34 @@
         <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest">
             <summary>
             
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenRequest">
+            <summary>
+            Represents a request to refresh a JWT access token.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenRequest.Token">
+            <summary>
+            The existing (possibly expired) JWT access token.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenRequest.RefreshToken">
+            <summary>
+            The refresh token used to generate a new access token.
+            </summary>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenResponse">
+            <summary>
+            Represents a response containing a new JWT access token and refresh token pair.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenResponse.Token">
+            <summary>
+            The newly generated JWT access token for authorization.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenResponse.RefreshToken">
+            <summary>
+            The newly issued refresh token that should be stored and used for future access token requests.
             </summary>
         </member>
         <member name="T:CitiesManager.WebAPI.Models.DTOs.Cities.CityAddRequest">

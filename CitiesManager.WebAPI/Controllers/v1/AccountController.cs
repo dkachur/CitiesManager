@@ -6,6 +6,8 @@ using CitiesManager.WebAPI.Models.DTOs.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace CitiesManager.WebAPI.Controllers.v1
 {
@@ -53,7 +55,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
         public async Task<ActionResult<AuthenticationResponse>> PostRegister(RegisterRequest request)
         {
             if (await _userManager.FindByEmailAsync(request.Email) != null)
-                return Problem("Given email already registered.", statusCode: StatusCodes.Status400BadRequest);
+                return Fail("Given email already registered.");
             
             ApplicationUser user = new()
             {
@@ -67,22 +69,13 @@ namespace CitiesManager.WebAPI.Controllers.v1
             if (!result.Succeeded)
             {
                 var errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
-                return Problem(errorMessage, statusCode: StatusCodes.Status400BadRequest);
+                return Fail(errorMessage);
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            var authResponse = _jwtService.CreateJwtToken(new() {
-                Email = user.Email,
-                PersonName = user.PersonName,
-                UserId = user.Id
-            });
-
-            user.RefreshToken = authResponse.RefreshToken;
-            user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
-            await _userManager.UpdateAsync(user);
-
-            return Ok(authResponse);
+            var authRes = await IssueTokensForUser(user);
+            return Ok(authRes);
         }
 
         /// <summary>
@@ -100,7 +93,7 @@ namespace CitiesManager.WebAPI.Controllers.v1
                 lockoutOnFailure: false);
 
             if (!result.Succeeded)
-                return Problem("Invalid email or password");
+                return Fail("Invalid email or password");
 
             var user = await _userManager.FindByNameAsync(request.Email);
             if (user is null 
@@ -108,18 +101,8 @@ namespace CitiesManager.WebAPI.Controllers.v1
                 || user.PersonName is null)
                 return NoContent();
 
-            var authResponse = _jwtService.CreateJwtToken(new()
-            {
-                Email = user.Email,
-                PersonName = user.PersonName,
-                UserId = user.Id
-            });
-
-            user.RefreshToken = authResponse.RefreshToken;
-            user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
-            await _userManager.UpdateAsync(user);
-
-            return Ok(authResponse);
+            var authRes = await IssueTokensForUser(user);
+            return Ok(authRes);
         }
 
         /// <summary>
@@ -132,5 +115,93 @@ namespace CitiesManager.WebAPI.Controllers.v1
             await _signInManager.SignOutAsync();
             return NoContent();
         }
+
+        /// <summary>
+        /// Refreshes token based on the existing jwt token and refresh token.
+        /// </summary>
+        /// <param name="tokenRequest">The token request.</param>
+        /// <returns>The <see cref="AuthenticationResponse"/> if refreshing was successful;
+        /// otherwise, <see cref="ProblemDetails"/> with error message</returns>
+        [HttpPost("token")]
+        public async Task<ActionResult<AuthenticationResponse>> GenerateNewAccessToken(TokenRequest tokenRequest)
+        {
+            var principal = _jwtService.GetPrincipalFromJwtToken(tokenRequest.Token);
+            if (principal is null) 
+                return Fail("Ivalid token");
+
+            var email = principal.FindFirstValue(JwtRegisteredClaimNames.Email);
+            if (string.IsNullOrEmpty(email))
+                return Fail("Email claims not found");
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return Fail("User not found");
+
+            var (isValid, error) = ValidateUser(user);
+            if (!isValid) 
+                return Fail(error!);
+
+            var authResponse = _jwtService.RefreshJwtToken(new()
+            {
+                RefreshTokenFromRequest = tokenRequest.RefreshToken,
+                RefreshTokenFromUser = user.RefreshToken!, 
+                Expiration = user.RefreshTokenExpiration,
+                CreateJwtTokenRequest = new()
+                {
+                    Email = user.Email!, 
+                    PersonName = user.PersonName!, 
+                    UserId = user.Id,
+                }
+            });
+            if (authResponse is null)
+                return Fail("Refresh token is invalid or expired", StatusCodes.Status401Unauthorized);
+
+            await UpdateUserRefreshTokenAsync(user, authResponse); 
+
+            return Ok(authResponse);
+        }
+
+
+        #region Helpers
+
+        private async Task<AuthenticationResponse> IssueTokensForUser(ApplicationUser user)
+        {
+            var authResponse = _jwtService.CreateJwtToken(new()
+            {
+                Email = user.Email!,
+                PersonName = user.PersonName!,
+                UserId = user.Id
+            });
+
+            await UpdateUserRefreshTokenAsync(user, authResponse);
+
+            return authResponse;
+        }
+
+        private ObjectResult Fail(string message, int status = StatusCodes.Status400BadRequest) 
+            => Problem(message, statusCode: status);
+
+        private (bool isValid, string? error) ValidateUser(ApplicationUser user)
+        {
+            if (string.IsNullOrWhiteSpace(user.Email))
+                return (false, "User email is missing");
+
+            if (string.IsNullOrWhiteSpace(user.PersonName))
+                return (false, "User email is missing");
+
+            if (string.IsNullOrWhiteSpace(user.RefreshToken))
+                return (false, "User email is missing");
+
+            return (true, null);
+        }
+
+        private async Task UpdateUserRefreshTokenAsync(ApplicationUser user, AuthenticationResponse authResponse)
+        {
+            user.RefreshToken = authResponse.RefreshToken;
+            user.RefreshTokenExpiration = authResponse.RefreshTokenExpiration;
+            await _userManager.UpdateAsync(user);
+        }
+
+        #endregion
     }
 }
