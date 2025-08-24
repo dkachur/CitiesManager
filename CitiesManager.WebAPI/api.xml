@@ -181,27 +181,82 @@
         </member>
         <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest">
             <summary>
-            
+            Represents a request for user login. 
             </summary>
         </member>
         <member name="M:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.#ctor">
             <summary>
-            
+            Represents a request for user login. 
             </summary>
         </member>
         <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.Email">
             <summary>
-            
+            The email address of the user.
             </summary>
         </member>
         <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.LoginRequest.Password">
             <summary>
-            
+            The password for user account.
             </summary>
         </member>
         <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest">
             <summary>
-            
+            Represents a request for user registration.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.PersonName">
+            <summary>
+            The person name of the user.
+            This field is mandatory.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.Email">
+            <summary>
+            The email address of the user.
+            This field is mandatory.    
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.Phone">
+            <summary>
+            The phone number of the user.
+            Must be between 6 and 16 digits long.
+            This field is mandatory.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.Password">
+            <summary>
+            The password for the user account.
+            This field is mandatory.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.ConfirmPassword">
+            <summary>
+            The password confirmation.
+            Must match <see cref="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterRequest.Password"/>.
+            This field is mandatory.
+            </summary>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterResponse">
+            <summary>
+            Represents a response returned after a successful user registration.
+            Contains user details such as person name, email and phone number.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterResponse.Email">
+            <summary>
+            The email address of the registered user.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterResponse.PersonName">
+            <summary>
+            The person name of the registered user.
+            </summary>
+        </member>
+        <member name="P:CitiesManager.WebAPI.Models.DTOs.Accounts.RegisterResponse.Phone">
+            <summary>
+            The phone number of the registered user.
+            </summary>
+        </member>
         <member name="T:CitiesManager.WebAPI.Models.DTOs.Accounts.TokenRequest">
             <summary>
             Represents a request to refresh a JWT access token.
